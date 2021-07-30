@@ -1,0 +1,158 @@
+---
+title: "Greece Covid Statistics" 
+author: "by Argyrios Georgiadis, Source:ourworldindata.org"
+output:
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+    theme: journal
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+#code for importing etc 
+#these libraries need to be loaded
+library(tidyverse)
+library(dplyr)
+library(tidyr)
+library(gapminder)
+library(ggplot2)
+library(forcats)
+library(R.utils)
+#library(png)
+library(grid)
+library(ggpubr)
+library(scales)
+library(bbplot)
+library(plotly)
+
+
+#import data
+path = "https://covid.ourworldindata.org/data/owid-covid-data.csv"
+
+data <- read.csv(path)
+
+str(data)
+glimpse(data)
+data$date <- as.Date(data$date)
+greece <- data %>%
+  filter(location == "Greece", date > "2020-02-20" )
+
+
+
+
+
+greece_cases_plot <- ggplot(greece) +
+  geom_line(aes(x = date, y = new_cases_smoothed), size = 1, colour = "red") +
+  geom_bar(stat="identity", aes(x = date,y=new_cases), colour="blue")+
+  geom_hline(yintercept = 0, size = 1, colour="#333333") +
+  bbc_style() +
+  labs(title="Daily New Covid-19 Cases in Greece")
+
+
+greece_cases_plotly <- ggplotly(greece_cases_plot)
+
+
+greece_deaths_plot <- ggplot(greece) +
+  geom_line(aes(x = date, y = new_deaths_smoothed), size = 1, colour = "red") +
+  geom_bar(stat="identity", aes(x = date,y=new_deaths), colour="blue")+
+  geom_hline(yintercept = 0, size = 1, colour="#333333") +
+  bbc_style() +
+  labs(title="Daily New Covid-19 Deaths in Greece")
+
+
+greece_deaths_plotly <- ggplotly(greece_deaths_plot)
+
+greece_test_plot <- ggplot(greece) +
+  geom_line(aes(x = date, y = new_tests_smoothed), size = 1, colour = "red") +
+  geom_bar(stat="identity", aes(x = date,y=new_tests), colour="blue")+
+  geom_hline(yintercept = 0, size = 1, colour="#333333") +
+  bbc_style() +
+  labs(title="Daily New Tests in Greece")
+
+
+greece_test_plotly <- ggplotly(greece_test_plot)
+
+greece_vaccinations_plot <- ggplot(greece) +
+  geom_line(aes(x = date, y = new_vaccinations_smoothed), size = 1, colour = "red") +
+  geom_bar(stat="identity", aes(x = date,y=new_vaccinations), colour="blue")+
+  geom_hline(yintercept = 0, size = 1, colour="#333333") +
+  bbc_style() +
+  labs(title="Daily New Vaccinations in Greece")
+
+
+greece_vaccinations_plotly <- ggplotly(greece_vaccinations_plot)
+ 
+greece_rate_plot <- ggplot(greece) +
+  geom_line(aes(x = date, y = reproduction_rate), size = 1, colour = "red") +
+  geom_hline(yintercept = 0, size = 1, colour="#333333") +
+  bbc_style() +
+  labs(title="Covid Reproduction Rate in Greece")
+
+
+greece_rate_plotly <- ggplotly(greece_rate_plot)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+###--
+
+
+
+
+```
+
+
+Column {.tabset}
+-----------------------------------------------------------------------
+
+### Daily New Cases 
+
+```{r}
+greece_cases_plotly
+
+```
+
+### Daily New Deaths
+
+```{r}
+greece_deaths_plotly
+```
+
+### Daily New Tests 
+
+```{r}
+greece_test_plotly
+```
+
+### Daily New Vaccinations
+
+```{r}
+greece_vaccinations_plotly
+
+```
+
+### Reproduction Rate
+
+```{r}
+greece_rate_plotly
+
+```
+
+
